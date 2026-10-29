@@ -165,6 +165,20 @@
                            (logged-in))))
              (rx/catch on-error))))))
 
+(defn login-with-cas
+  [token]
+  (ptk/reify ::login-with-cas
+    ptk/WatchEvent
+    (watch [_ _ _]
+      (->> (rp/cmd! :login-with-cas {:token token})
+           (rx/merge-map (fn [_] (rp/cmd! :get-profile)))
+           (rx/map (fn [profile]
+                     (if (is-authenticated? profile)
+                       (logged-in (with-meta profile {::ev/source "login-with-cas"}))
+                       (ex/raise :type :authentication))))
+           (rx/catch (fn [_]
+                       (rx/of (ntf/error "单点登录失败，请重新登录。"))))))))
+
 (def ^:private schema:login-with-sso
   [:map {:title "login-with-sso"}
    [:provider [:or :string ::sm/uuid]]])

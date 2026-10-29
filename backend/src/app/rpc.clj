@@ -384,6 +384,7 @@
           'app.rpc.commands.access-token
           'app.rpc.commands.audit
           'app.rpc.commands.auth
+          'app.rpc.commands.cas
           'app.rpc.commands.feedback
           'app.rpc.commands.fonts
           'app.rpc.commands.binfile

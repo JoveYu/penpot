@@ -279,7 +279,17 @@
 
 (mf/defc login-page*
   [{:keys [params]}]
-  (let [go-register
+  (let [token (.get (.-searchParams (js/URL. (rt/get-current-href))) "token")
+        _ (mf/with-effect [token]
+            (when (and (string? token)
+                       (not-empty token)
+                       (.has (.-searchParams (js/URL. (rt/get-current-href))) "token"))
+              (let [url (js/URL. (rt/get-current-href))]
+                (.delete (.-searchParams url) "token")
+                (dom/replace-history-state! (.toString url)))
+              (st/emit! (da/login-with-cas token)))
+            nil)
+        go-register
         (mf/use-fn
          #(st/emit! (rt/nav :auth-register params)))]
 

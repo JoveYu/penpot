@@ -110,6 +110,7 @@
 
     [:tenant {:optional false} :string]
     [:public-uri {:optional false} ::sm/uri]
+    [:cas-auth-uri {:optional true} :string]
     [:host {:optional false} :string]
 
     [:http-server-port {:optional true} ::sm/int]

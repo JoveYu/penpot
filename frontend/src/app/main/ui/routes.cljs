@@ -186,6 +186,10 @@
       (not valid-location?)
       (st/emit! (rt/assign-exception {:type :not-found}))
 
+      (and (.has (.-searchParams (js/URL. (rt/get-current-href))) "token")
+           (not= :auth-login (get-in match [:data :name])))
+      (st/emit! (rt/nav :auth-login))
+
       (some? match)
       (handle-sso-error-and-navigate match send-event-info? (rt/get-current-href))
 
